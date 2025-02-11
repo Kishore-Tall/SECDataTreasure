@@ -1,6 +1,6 @@
 
 from flask import Flask, render_template, request, jsonify, send_file
-from functions import process_input_and_download_reports, initialize, cleanup_files
+from functions import process_input_and_download_reports
 import os
 
 app = Flask(__name__)
