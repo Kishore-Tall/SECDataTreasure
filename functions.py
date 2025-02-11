@@ -102,10 +102,10 @@ def download_report(filingDict: Dict[str, Any]) -> Optional[str]:
             'https://www.sec.gov/Archives/edgar/data/', ''
         )
         base_url = 'https://archive.sec-api.io/' + reports_path
-        render_api_url = base_url + '?token=' + Api_Key  # Token should come last
+        render_api_url = base_url + '?token=' + Api_Key # Token should come last
 
         response = requests.get(render_api_url, timeout=10)
-        response.raise_for_status()  # Ensure request was successful
+        response.raise_for_status() # Ensure request was successful
 
 
         file_name = f"{filingDict['ticker']}-{filingDict['periodOfReport']}-{filingDict['formType']}.xlsx"
