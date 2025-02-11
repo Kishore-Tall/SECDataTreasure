@@ -55,14 +55,17 @@
     </div>
     
     <script>
+        // Fetch options for dropdowns on page load
         fetch('/get-options')
             .then(response => response.json())
             .then(data => {
                 populateDropdown("company-dropdown", data.companies);
                 populateDropdown("formtype-dropdown", data.formtypes);
                 populateDropdown("year-dropdown", data.years);
-            });
+            })
+            .catch(error => console.error("Error fetching dropdown options:", error));
 
+        // Function to populate dropdowns dynamically
         function populateDropdown(elementId, options) {
             let dropdown = document.getElementById(elementId);
             options.forEach(option => {
@@ -73,31 +76,40 @@
             });
         }
 
-        function getData() {
+        // Function to fetch data based on user selection
+        async function getData() {
             let company = document.getElementById("company-dropdown").value;
             let formtype = document.getElementById("formtype-dropdown").value;
             let year = document.getElementById("year-dropdown").value;
-            let format = document.querySelector('input[name="format"]:checked').value;
 
             document.getElementById("status").innerText = "Processing...";
 
-            fetch('/get-data', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ company, formtype, year, format })
-            })
-            .then(response => response.blob())
-            .then(blob => {
+            try {
+                let response = await fetch('/get-data', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ company, formtype, year })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch data");
+                }
+
+                let blob = await response.blob();
+                let url = URL.createObjectURL(blob);
                 let link = document.createElement("a");
-                link.href = URL.createObjectURL(blob);
-                link.download = `data.${format}`;
+                link.href = url;
+                link.download = "reports.zip"; // ZIP file name
+                document.body.appendChild(link);
                 link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url); // Free memory
+
                 document.getElementById("status").innerText = "Download Ready!";
-            })
-            .catch(error => {
+            } catch (error) {
                 document.getElementById("status").innerText = "Error occurred!";
-                console.error(error);
-            });
+                console.error("Download error:", error);
+            }
         }
     </script>
 </body>

@@ -171,19 +171,24 @@ def delete_files(list_of_file_paths: List[Optional[str]]) -> bool:
     print(f"Deleting files: {list_of_file_paths}")
     return True
 
-def process_input_and_download_reports(ticker: str, formtype: str, year: int) -> None:
+def process_input_and_download_reports(ticker: str, formtype: str, year: int) -> Optional[str]:
     file_paths: List[Optional[str]] = []
     from_date, to_date = build_date_range(year)
     search_query = build_search_query(ticker, formtype, from_date, to_date)
-    filings_data = fetch_filings(search_query) # get filings metadata
-    filings_list = process_filings_dataframe(filings_data) # get urls
-    for filingDict in (filings_list): # download reports and append file paths to list
+    filings_data = fetch_filings(search_query)  # get filings metadata
+    filings_list = process_filings_dataframe(filings_data)  # get URLs
+    
+    for filingDict in filings_list:  # download reports and append file paths to list
         downloaded_file_path = download_report(filingDict)
         file_paths.append(downloaded_file_path)
-    zip_file_path = create_zip_archive(file_paths) # create a zip file of downloaded files
-    file_paths.append(zip_file_path) # append zip file path to list
-    if send_files_to_user(zip_file_path): # send zip file from server to client
-        file_deletion = delete_files(file_paths) # delete files and zip from server
+
+    zip_file_path = create_zip_archive(file_paths)  # create zip file
+
+    if zip_file_path:
+        return zip_file_path  # return zip file path 
+    
+    return None
+
 '''
 ####################################################################################################
 """# Testing """

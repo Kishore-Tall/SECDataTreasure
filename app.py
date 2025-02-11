@@ -22,14 +22,20 @@ def get_data():
     data = request.json
     if not data:
         return jsonify({"error": "No data provided"}), 400
-    
+
     ticker = data.get('company')
     formtype = data.get('formtype')
     year = data.get('year')
 
-    process_input_and_download_reports(ticker, formtype, year)
+    # process inputs, download reports, generate zip file and return zip file path
+    zip_file_path = process_input_and_download_reports(ticker, formtype, year)
 
-    return jsonify({"message": "Processing completed"}), 200  
+    # send zip file to frontend
+    if zip_file_path and os.path.exists(zip_file_path):
+        return send_file(zip_file_path, as_attachment=True, mimetype='application/zip')
+
+    return jsonify({"error": "Failed to generate ZIP file"}), 500  
+ 
 
     
     
