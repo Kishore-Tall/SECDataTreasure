@@ -5,9 +5,20 @@ from datetime import datetime, timedelta
 import zipfile
 from typing import Dict, Any, List, Optional
 from tqdm import tqdm
+from flask import send_file, Response
 
 # api key
 Api_Key = "f4f1973fd18e51bfd9dd824dbee7dbc5d4b875e26ce043a34819ec336a1608ee"
+
+# limiting the options for PoC
+def generate_options():
+    options = {
+        "companies": ["AAPL", "GOOG", "MSFT", "AMZN", "TSLA"],
+        "formtypes": ["10-K", "10-Q", "8-K", "S-1", "DEF 14A"],
+        "years": [str(year) for year in range(2000, 2025)]
+    }
+    return options
+
 
 # helper function : build date range from date
 def build_date_range(year: int) -> tuple[str, str]:
@@ -102,10 +113,10 @@ def download_report(filingDict: Dict[str, Any]) -> Optional[str]:
             'https://www.sec.gov/Archives/edgar/data/', ''
         )
         base_url = 'https://archive.sec-api.io/' + reports_path
-        render_api_url = base_url + '?token=' + Api_Key # Token should come last
+        render_api_url = base_url + '?token=' + Api_Key
 
         response = requests.get(render_api_url, timeout=10)
-        response.raise_for_status() # Ensure request was successful
+        response.raise_for_status()
 
 
         file_name = f"{filingDict['ticker']}-{filingDict['periodOfReport']}-{filingDict['formType']}.xlsx"
@@ -143,10 +154,16 @@ def create_zip_archive(filepaths: List[Optional[str]]) -> Optional[str]:
         return None
 
 # send files to user
-def send_files_to_user(zip_file_path: Optional[str]) -> bool:
-    # pass
-    print(f"Sending files to user: {zip_file_path}")
-    return True
+def send_files_to_user(zip_file_path: Optional[str]) -> Response:
+    if not zip_file_path or not os.path.exists(zip_file_path):
+        return Response("File not found", status=404)
+
+    return send_file(
+        zip_file_path,
+        as_attachment=True,
+        download_name=os.path.basename(zip_file_path),
+        mimetype='application/zip'
+    )
 
 # delete files locally
 def delete_files(list_of_file_paths: List[Optional[str]]) -> bool:
@@ -169,7 +186,7 @@ def process_input_and_download_reports(ticker: str, formtype: str, year: int) ->
         file_deletion = delete_files(file_paths) # delete files and zip from server
 '''
 ####################################################################################################
-"""# Testing final function call"""
+"""# Testing """
 
 #Testing final function call
 ticker='AAPL'
