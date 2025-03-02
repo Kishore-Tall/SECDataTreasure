@@ -15,7 +15,7 @@ def generate_options():
     options = {
         "companies": ["AAPL", "GOOG", "MSFT", "AMZN", "TSLA"],
         "formtypes": ["10-K", "10-Q", "8-K", "S-1", "DEF 14A"],
-        "years": [str(year) for year in range(2000, 2025)]
+        "years": [str(year) for year in range(2020, 2025)]
     }
     return options
 
