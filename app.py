@@ -65,7 +65,7 @@ def download_InsiderTradingData():
     if not data:
         return jsonify({"error": "Failed to fetch data from SEC API"}), 500
     
-    filename = f"{ticker}_directors.json"
+    filename = f"{ticker}_insiderTrading.json"
     filepath = os.path.join("/tmp", filename)  
     with open(filepath, "w") as f:
         json.dump(data, f, indent=4)
