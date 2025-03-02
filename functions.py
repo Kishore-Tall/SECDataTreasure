@@ -209,11 +209,11 @@ def fetch_directors_data(ticker):
         return None
 
 
-def fetch_Board_Members_data(ticker):
-    url = "https://api.sec-api.io/directors-and-board-members"
+def fetch_InsiderTradingData(ticker):
+    url = "https://api.sec-api.io/insider-trading"
     headers = {"Authorization": Api_Key, "Content-Type": "application/json"}
     payload = {
-        "query": f"ticker:{ticker}",
+        "query": f"issuer.tradingSymbol:{ticker}",
         "from": 0,
         "size": 50,
         "sort": [{"filedAt": {"order": "desc"}}]

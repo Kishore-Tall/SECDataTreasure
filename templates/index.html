@@ -82,7 +82,7 @@
             <div class="controls" id="component3">
                 <label>Select Company:</label>
                 <select id="company-dropdown-3"></select>
-                <button onclick="getBoardMembersData()">Get Board Members Data</button>
+                <button onclick="getInsiderTradingData()">Get Insider Trading Data</button>
             </div>
         </div>
 
@@ -164,9 +164,9 @@
             window.location.href = `/download-directors?ticker=${company}`;
         }
 
-        function getBoardMembersData() {
+        function getInsiderTradingData() {
             let company = document.getElementById("company-dropdown-3").value;
-            window.location.href = `/download-BoardMembers?ticker=${company}`;
+            window.location.href = `/download-InsiderTradingData?ticker=${company}`;
         }
 
         toggleComponent(1);

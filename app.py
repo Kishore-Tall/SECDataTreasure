@@ -1,6 +1,6 @@
 
 from flask import Flask, render_template, request, jsonify, send_file
-from functions import process_input_and_download_reports, generate_options,fetch_directors_data, fetch_Board_Members_data
+from functions import process_input_and_download_reports, generate_options,fetch_directors_data, fetch_InsiderTradingData
 import os, json
 
 app = Flask(__name__)
@@ -55,13 +55,13 @@ def download_directors():
     return send_file(filepath, as_attachment=True, download_name=filename, mimetype="application/json")
 
 
-@app.route("/download-BoardMembers", methods=["GET"])
-def download_BoardMembers():
+@app.route("/download-InsiderTradingData", methods=["GET"])
+def download_InsiderTradingData():
     ticker = request.args.get("ticker")
     if not ticker:
         return jsonify({"error": "Missing ticker parameter"}), 400
     
-    data = fetch_Board_Members_data(ticker)
+    data = fetch_InsiderTradingData(ticker)
     if not data:
         return jsonify({"error": "Failed to fetch data from SEC API"}), 500
     
