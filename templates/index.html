@@ -45,8 +45,6 @@
         .controls select, .controls button {
             margin: 0;
         }
-        
-        /* Left-align components except the first one */
         .functional-component:not(:first-child) .controls {
             justify-content: flex-start;
         }
@@ -85,29 +83,11 @@
                 <button onclick="getInsiderTradingData()">Get Insider Trading Data</button>
             </div>
         </div>
-
-        <div class="functional-component">
-            <input type="radio" name="function" onclick="toggleComponent(4)">
-            <div class="controls" id="component4">
-                <label>Dummy:</label>
-                <select></select>
-                <button>Dummy Button</button>
-            </div>
-        </div>
-
-        <div class="functional-component">
-            <input type="radio" name="function" onclick="toggleComponent(5)">
-            <div class="controls" id="component5">
-                <label>Dummy:</label>
-                <select></select>
-                <button>Dummy Button</button>
-            </div>
-        </div>
     </div>
 
     <script>
         function toggleComponent(activeIndex) {
-            for (let i = 1; i <= 5; i++) {
+            for (let i = 1; i <= 3; i++) {
                 let component = document.getElementById(`component${i}`);
                 let selects = component.querySelectorAll("select, button");
                 selects.forEach(el => el.disabled = (i !== activeIndex));
