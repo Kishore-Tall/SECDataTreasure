@@ -1,7 +1,7 @@
 
 from flask import Flask, render_template, request, jsonify, send_file
-from functions import process_input_and_download_reports, generate_options
-import os
+from functions import process_input_and_download_reports, generate_options,fetch_directors_data, fetch_Board_Members_data
+import os, json
 
 app = Flask(__name__)
 
@@ -37,7 +37,41 @@ def get_data():
     return jsonify({"error": "Failed to generate ZIP file"}), 500  
  
 
+@app.route("/download-directors", methods=["GET"])
+def download_directors():
+    ticker = request.args.get("ticker")
+    if not ticker:
+        return jsonify({"error": "Missing ticker parameter"}), 400
     
+    data = fetch_directors_data(ticker)
+    if not data:
+        return jsonify({"error": "Failed to fetch data from SEC API"}), 500
+    
+    filename = f"{ticker}_directors.json"
+    filepath = os.path.join("/tmp", filename)  
+    with open(filepath, "w") as f:
+        json.dump(data, f, indent=4)
+    
+    return send_file(filepath, as_attachment=True, download_name=filename, mimetype="application/json")
+
+
+@app.route("/download-BoardMembers", methods=["GET"])
+def download_BoardMembers():
+    ticker = request.args.get("ticker")
+    if not ticker:
+        return jsonify({"error": "Missing ticker parameter"}), 400
+    
+    data = fetch_Board_Members_data(ticker)
+    if not data:
+        return jsonify({"error": "Failed to fetch data from SEC API"}), 500
+    
+    filename = f"{ticker}_directors.json"
+    filepath = os.path.join("/tmp", filename)  
+    with open(filepath, "w") as f:
+        json.dump(data, f, indent=4)
+    
+    return send_file(filepath, as_attachment=True, download_name=filename, mimetype="application/json")
+
     
 if __name__ == '__main__':
     app.run(debug=True)

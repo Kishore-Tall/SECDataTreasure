@@ -189,6 +189,43 @@ def process_input_and_download_reports(ticker: str, formtype: str, year: int) ->
     
     return None
 
+
+# to download directors' data given a ticker
+
+def fetch_directors_data(ticker):
+    url = "https://api.sec-api.io/directors-and-board-members"
+    headers = {"Authorization": Api_Key, "Content-Type": "application/json"}
+    payload = {
+        "query": f"ticker:{ticker}",
+        "from": 0,
+        "size": 50,
+        "sort": [{"filedAt": {"order": "desc"}}]
+    }
+    
+    response = requests.post(url, headers=headers, json=payload)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return None
+
+
+def fetch_Board_Members_data(ticker):
+    url = "https://api.sec-api.io/directors-and-board-members"
+    headers = {"Authorization": Api_Key, "Content-Type": "application/json"}
+    payload = {
+        "query": f"ticker:{ticker}",
+        "from": 0,
+        "size": 50,
+        "sort": [{"filedAt": {"order": "desc"}}]
+    }
+    
+    response = requests.post(url, headers=headers, json=payload)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return None
+
+
 '''
 ####################################################################################################
 """# Testing """
